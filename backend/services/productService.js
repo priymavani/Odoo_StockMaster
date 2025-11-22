@@ -36,12 +36,27 @@ async function createProduct(data, userId) {
 }
 
 async function getProductById(id) {
-  const product = await Product.findById(id);
+  const product = await Product.findById(id).lean();
   if (!product) {
     const err = new Error('Product not found');
     err.statusCode = 404;
     throw err;
   }
+  
+  // Manually populate location details for each location in the array
+  if (product.locations && product.locations.length > 0) {
+    const Location = require('../models/Location');
+    const locationIds = product.locations.map(loc => loc.location);
+    const locations = await Location.find({ _id: { $in: locationIds } }).select('name code').lean();
+    const locationMap = new Map(locations.map(loc => [loc._id.toString(), loc]));
+    
+    // Replace location IDs with populated location objects
+    product.locations = product.locations.map(loc => ({
+      ...loc,
+      location: locationMap.get(loc.location?.toString() || loc.location) || loc.location,
+    }));
+  }
+  
   return product;
 }
 
@@ -143,6 +158,7 @@ async function importProductsFromCsv(buffer, userId) {
       uom,
       reorderLevel: reorderLevel ? Number(reorderLevel) : 0,
       locations: [],
+      
     };
 
     if (locationCode && qty) {
