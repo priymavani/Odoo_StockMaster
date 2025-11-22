@@ -29,16 +29,18 @@ app.use(express.json()); // To accept JSON data in body
 
 // Import Routes
 const productRoutes = require('./routes/productRoutes');
+const warehouseRoutes = require('./routes/warehouseRoutes'); // <-- Naya Import: Warehouse Routes
 
 // Mount Routes
-app.use('/api/products', productRoutes);
+app.use('/api/products', productRoutes); // Products routes
+app.use('/api', warehouseRoutes); // <-- CRITICAL FIX: Warehouse routes mounted at /api
 
 // Define a simple root route
 app.get('/', (req, res) => {
-    res.send('StockMaster IMS Product API is running...');
+    res.send('StockMaster IMS API is running...');
 });
 
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`));
