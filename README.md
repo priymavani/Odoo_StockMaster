@@ -13,7 +13,7 @@
 Watch the demo: [Play video on Google Drive](https://drive.google.com/drive/folders/1xgiYgXuigjltaZf_UEWuIw6FVTkyLNTO)
 
 ## Project Link 
-[stock master link](https://odoo-stock-frontend.vercel.app/dashboard)
+[stock master link](https://odoo-stock-frontend.vercel.app/)
 
 [Backend Link](https://odoo-stockmaster-backend.onrender.com)
 
