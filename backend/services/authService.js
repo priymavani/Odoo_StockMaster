@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 function getSaltRounds() {
   return Number(process.env.BCRYPT_SALT_ROUNDS || 10);
@@ -75,6 +77,24 @@ function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+// async function requestPasswordReset(email) {
+//   const user = await User.findOne({ email });
+//   if (!user) {
+//     // Do not reveal whether email exists
+//     return;
+//   }
+
+//   const otp = generateOtp();
+//   const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+//   user.resetOtp = otp;
+//   user.resetOtpExpiresAt = expiresAt;
+//   await user.save();
+
+//   // In real app, send via email/SMS. For this MVP, log to server console.
+//   console.log(`Password reset OTP for ${email}: ${otp}`);
+// }
+
 async function requestPasswordReset(email) {
   const user = await User.findOne({ email });
   if (!user) {
@@ -82,15 +102,48 @@ async function requestPasswordReset(email) {
     return;
   }
 
-  const otp = generateOtp();
+  const otp = generateOtp(); // Example: 6 digit OTP
   const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
 
   user.resetOtp = otp;
   user.resetOtpExpiresAt = expiresAt;
   await user.save();
 
-  // In real app, send via email/SMS. For this MVP, log to server console.
-  console.log(`Password reset OTP for ${email}: ${otp}`);
+  // ---------------------------
+  // 🔹 EMAIL SENDING (Nodemailer)
+  // ---------------------------
+  const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+      unifiedTopology: false,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: "Your Password Reset OTP",
+    text: `Hi ${user.name || "User"},  
+
+You requested to reset your password.
+
+Your OTP is: ${otp}
+
+This OTP is valid for 15 minutes.
+
+If you didn’t request a password reset, simply ignore this email.
+
+Thanks,
+Stock Master `,
+  };
+
+  await transporter.sendMail(mailOptions);
+
+  console.log(`Password reset OTP sent to email: ${email}`);
+
+  return { message: "OTP sent to email" };
 }
 
 async function resetPassword({ email, otp, newPassword }) {
