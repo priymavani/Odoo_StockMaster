@@ -36,12 +36,12 @@ Edit the values as needed (Mongo URI, JWT secret, etc.).
 npm start
 ```
 
-The API runs on `https://odoo-stock-backend.vercel.app` by default.
+The API runs on `https://odoo-stockmaster-backend.onrender.com` by default.
 
 You can verify with:
 
 ```bash
-curl https://odoo-stock-backend.vercel.app/health
+curl https://odoo-stockmaster-backend.onrender.com/health
 ```
 
 ### 4. Seed data
@@ -265,14 +265,14 @@ Replace `${TOKEN}` with your JWT.
 
 ### Login
 ```bash
-curl -X POST https://odoo-stock-backend.vercel.app/api/auth/login \
+curl -X POST https://odoo-stockmaster-backend.onrender.com/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@stockmaster.test","password":"yourPassword"}'
 ```
 
 ### Create Product (admin)
 ```bash
-curl -X POST https://odoo-stock-backend.vercel.app/api/products \
+curl -X POST https://odoo-stockmaster-backend.onrender.com/api/products \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"name":"Steel Rods","sku":"SR-001","uom":"kg","category":"Raw Material","reorderLevel":20}'
@@ -280,7 +280,7 @@ curl -X POST https://odoo-stock-backend.vercel.app/api/products \
 
 ### Receipt
 ```bash
-curl -X POST https://odoo-stock-backend.vercel.app/api/receipts \
+curl -X POST https://odoo-stockmaster-backend.onrender.com/api/receipts \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"referenceId":"PO-001","lines":[{"productId":"<PRODUCT_ID>","qty":100,"toLocationId":"<LOCATION_ID>"}]}'
@@ -288,7 +288,7 @@ curl -X POST https://odoo-stock-backend.vercel.app/api/receipts \
 
 ### Transfer
 ```bash
-curl -X POST https://odoo-stock-backend.vercel.app/api/transfers \
+curl -X POST https://odoo-stockmaster-backend.onrender.com/api/transfers \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"referenceId":"TR-001","lines":[{"productId":"<PRODUCT_ID>","qty":40,"fromLocationId":"<MAIN_ID>","toLocationId":"<PROD_ID>"}]}'
@@ -296,7 +296,7 @@ curl -X POST https://odoo-stock-backend.vercel.app/api/transfers \
 
 ### Delivery
 ```bash
-curl -X POST https://odoo-stock-backend.vercel.app/api/deliveries \
+curl -X POST https://odoo-stockmaster-backend.onrender.com/api/deliveries \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"referenceId":"DEL-001","lines":[{"productId":"<PRODUCT_ID>","qty":10,"fromLocationId":"<MAIN_ID>"}]}'
@@ -304,7 +304,7 @@ curl -X POST https://odoo-stock-backend.vercel.app/api/deliveries \
 
 ### Dashboard
 ```bash
-curl -H "Authorization: Bearer ${TOKEN}" https://odoo-stock-backend.vercel.app/api/dashboard
+curl -H "Authorization: Bearer ${TOKEN}" https://odoo-stockmaster-backend.onrender.com/api/dashboard
 ```
 
 ---
