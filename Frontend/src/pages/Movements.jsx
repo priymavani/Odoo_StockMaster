@@ -148,7 +148,7 @@ export function Movements() {
         </CardContent>
       </Card>
 
-      {/* Movements List */}
+      {/* Movements Table */}
       <Card>
         <CardHeader>
           <CardTitle>Movements ({movements.length})</CardTitle>
@@ -160,62 +160,142 @@ export function Movements() {
               <p className="text-gray-600 text-lg">No movements found</p>
             </div>
           ) : (
-            <div className="space-y-3">
-              {movements.map((movement, index) => (
-                <motion.div
-                  key={movement._id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-primary-300 hover:shadow-sm transition-all"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className={`px-2.5 py-1 rounded-md text-xs font-semibold ${getTypeColor(movement.type)}`}>
-                        {movement.type.toUpperCase()}
-                      </span>
-                      <span className="font-medium text-gray-900">
-                        {movement.product?.name || 'Unknown Product'}
-                      </span>
-                      <span className="text-sm text-gray-500">({movement.product?.sku})</span>
-                    </div>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      {movement.fromLocation && (
-                        <p>From: <span className="font-medium">{movement.fromLocation.name}</span> ({movement.fromLocation.code})</p>
-                      )}
-                      {movement.toLocation && (
-                        <p>To: <span className="font-medium">{movement.toLocation.name}</span> ({movement.toLocation.code})</p>
-                      )}
-                      {movement.referenceId && (
-                        <p>Reference: <span className="font-medium">{movement.referenceId}</span></p>
-                      )}
-                      {movement.createdBy && (
-                        <p>By: <span className="font-medium">{movement.createdBy.name}</span> ({movement.createdBy.email})</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-right ml-4">
-                    <div className={`font-semibold text-lg ${
-                      movement.type === 'receipt' ? 'text-green-600' :
-                      movement.type === 'delivery' ? 'text-red-600' :
-                      movement.type === 'adjustment' && movement.qty < 0 ? 'text-red-600' :
-                      'text-gray-900'
-                    }`}>
-                      {movement.qty > 0 ? '+' : ''}{formatNumber(movement.qty)}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {formatDate(movement.createdAt)}
-                    </div>
-                    {movement.status && (
-                      <div className="mt-1">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                          {movement.status}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 bg-gray-50">
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Type
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Product
+                    </th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Quantity
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      From Location
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      To Location
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Reference
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Created By
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {movements.map((movement, index) => (
+                    <motion.tr
+                      key={movement._id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: index * 0.02 }}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold ${getTypeColor(movement.type)}`}>
+                          {movement.type.toUpperCase()}
                         </span>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div>
+                          <div className="font-medium text-gray-900">
+                            {movement.product?.name || 'Unknown Product'}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {movement.product?.sku || 'N/A'}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-right">
+                        <span className={`font-semibold ${
+                          movement.type === 'receipt' ? 'text-green-600' :
+                          movement.type === 'delivery' ? 'text-red-600' :
+                          movement.type === 'adjustment' && movement.qty < 0 ? 'text-red-600' :
+                          'text-gray-900'
+                        }`}>
+                          {movement.qty > 0 ? '+' : ''}{formatNumber(movement.qty)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        {movement.fromLocation ? (
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {movement.fromLocation.name}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {movement.fromLocation.code}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {movement.toLocation ? (
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {movement.toLocation.name}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {movement.toLocation.code}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {movement.referenceId ? (
+                          <span className="text-sm font-medium text-gray-900">
+                            {movement.referenceId}
+                          </span>
+                        ) : (
+                          <span className="text-sm text-gray-400">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {movement.createdBy ? (
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {movement.createdBy.name}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {movement.createdBy.email}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="text-sm text-gray-400">—</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {formatDate(movement.createdAt)}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-center">
+                        {movement.status ? (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                            {movement.status}
+                          </span>
+                        ) : (
+                          <span className="text-sm text-gray-400">—</span>
+                        )}
+                      </td>
+                    </motion.tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           )}
         </CardContent>

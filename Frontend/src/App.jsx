@@ -5,6 +5,9 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 
+// Landing Page
+import { Landing } from './pages/Landing';
+
 // Auth Pages
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -40,42 +43,41 @@ function App() {
         <BrowserRouter>
           <Routes>
             {/* Public Routes */}
+            <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             
             {/* Protected Routes */}
             <Route
-              path="/"
               element={
                 <ProtectedRoute>
                   <Layout />
                 </ProtectedRoute>
               }
             >
-              <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="products" element={<Products />} />
-              <Route path="products/:id" element={<ProductDetails />} />
-              <Route path="locations" element={<Locations />} />
-              <Route path="receipts" element={<Receipts />} />
-              <Route path="deliveries" element={<Deliveries />} />
-              <Route path="transfers" element={<Transfers />} />
-              <Route path="adjustments" element={<Adjustments />} />
-              <Route path="movements" element={<Movements />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/:id" element={<ProductDetails />} />
+              <Route path="/locations" element={<Locations />} />
+              <Route path="/receipts" element={<Receipts />} />
+              <Route path="/deliveries" element={<Deliveries />} />
+              <Route path="/transfers" element={<Transfers />} />
+              <Route path="/adjustments" element={<Adjustments />} />
+              <Route path="/movements" element={<Movements />} />
               <Route
-                path="debug"
+                path="/debug"
                 element={
                   <ProtectedRoute adminOnly>
                     <Debug />
                   </ProtectedRoute>
                 }
               />
-              <Route path="profile" element={<Profile />} />
+              <Route path="/profile" element={<Profile />} />
             </Route>
 
-            {/* Catch all */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            {/* Catch all - redirect authenticated users to dashboard, others to landing */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
         <Toaster

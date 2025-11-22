@@ -1,14 +1,25 @@
 import { useParams, Link } from 'react-router-dom';
-import { useProduct } from '../hooks/useApi';
+import { useProduct, useLocations } from '../hooks/useApi';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { ArrowLeft, Package, MapPin } from 'lucide-react';
 import { formatNumber } from '../lib/utils';
 import { motion } from 'framer-motion';
+import { useMemo } from 'react';
 
 export function ProductDetails() {
   const { id } = useParams();
   const { data: product, isLoading, error } = useProduct(id);
+  const { data: locations = [] } = useLocations();
+  
+  // Create a map of location IDs to location objects for quick lookup
+  const locationMap = useMemo(() => {
+    const map = new Map();
+    locations.forEach(loc => {
+      map.set(loc._id, loc);
+    });
+    return map;
+  }, [locations]);
 
   if (isLoading) {
     return (
@@ -99,27 +110,41 @@ export function ProductDetails() {
             <CardContent>
               {product.locations && product.locations.length > 0 ? (
                 <div className="space-y-3">
-                  {product.locations.map((loc, index) => (
-                    <motion.div
-                      key={loc.location?._id || index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"
-                    >
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {loc.location?.name || 'Unknown Location'}
-                        </p>
-                        <p className="text-sm text-gray-500">Code: {loc.location?.code || 'N/A'}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-2xl font-bold text-gray-900">
-                          {formatNumber(loc.qty)} {product.uom}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
+                  {product.locations.map((loc, index) => {
+                    // Get location ID (could be string or object with _id)
+                    const locationId = typeof loc.location === 'string' 
+                      ? loc.location 
+                      : (loc.location?._id || loc.location?.toString() || loc.location);
+                    
+                    // Look up location details from the locations map
+                    const locationDetails = locationMap.get(locationId?.toString());
+                    
+                    // Use populated data if available, otherwise use locationMap lookup, otherwise fallback
+                    const locationName = loc.location?.name || locationDetails?.name || 'Unknown Location';
+                    const locationCode = loc.location?.code || locationDetails?.code || 'N/A';
+                    
+                    return (
+                      <motion.div
+                        key={locationId?.toString() || index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"
+                      >
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {locationName}
+                          </p>
+                          <p className="text-sm text-gray-500">Code: {locationCode}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-2xl font-bold text-gray-900">
+                            {formatNumber(loc.qty)} {product.uom}
+                          </p>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="text-center py-8 text-gray-500">
