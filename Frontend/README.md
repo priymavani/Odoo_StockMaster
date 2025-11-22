@@ -31,7 +31,7 @@ A premium, modern React frontend for the StockMaster inventory management system
 ## Prerequisites
 
 - Node.js 18+ and npm
-- Backend API running on `http://localhost:4000`
+- Backend API running on `https://odoo-stock-backend.vercel.app`
 
 ## Installation
 
@@ -115,7 +115,7 @@ Frontend/
 
 ## API Integration
 
-All API calls are made to `http://localhost:4000/api` using Axios. The API client automatically:
+All API calls are made to `https://odoo-stock-backend.vercel.app/api` using Axios. The API client automatically:
 
 - Adds JWT tokens to requests
 - Handles 401 errors (redirects to login)
@@ -160,7 +160,7 @@ All API calls are made to `http://localhost:4000/api` using Axios. The API clien
 Create a `.env` file if you need to customize the API URL:
 
 ```env
-VITE_API_URL=http://localhost:4000/api
+VITE_API_URL=https://odoo-stock-backend.vercel.app/api
 ```
 
 ## Troubleshooting

@@ -36,12 +36,12 @@ Edit the values as needed (Mongo URI, JWT secret, etc.).
 npm start
 ```
 
-The API runs on `http://localhost:4000` by default.
+The API runs on `https://odoo-stock-backend.vercel.app` by default.
 
 You can verify with:
 
 ```bash
-curl http://localhost:4000/health
+curl https://odoo-stock-backend.vercel.app/health
 ```
 
 ### 4. Seed data
@@ -265,14 +265,14 @@ Replace `${TOKEN}` with your JWT.
 
 ### Login
 ```bash
-curl -X POST http://localhost:4000/api/auth/login \
+curl -X POST https://odoo-stock-backend.vercel.app/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@stockmaster.test","password":"yourPassword"}'
 ```
 
 ### Create Product (admin)
 ```bash
-curl -X POST http://localhost:4000/api/products \
+curl -X POST https://odoo-stock-backend.vercel.app/api/products \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"name":"Steel Rods","sku":"SR-001","uom":"kg","category":"Raw Material","reorderLevel":20}'
@@ -280,7 +280,7 @@ curl -X POST http://localhost:4000/api/products \
 
 ### Receipt
 ```bash
-curl -X POST http://localhost:4000/api/receipts \
+curl -X POST https://odoo-stock-backend.vercel.app/api/receipts \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"referenceId":"PO-001","lines":[{"productId":"<PRODUCT_ID>","qty":100,"toLocationId":"<LOCATION_ID>"}]}'
@@ -288,7 +288,7 @@ curl -X POST http://localhost:4000/api/receipts \
 
 ### Transfer
 ```bash
-curl -X POST http://localhost:4000/api/transfers \
+curl -X POST https://odoo-stock-backend.vercel.app/api/transfers \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"referenceId":"TR-001","lines":[{"productId":"<PRODUCT_ID>","qty":40,"fromLocationId":"<MAIN_ID>","toLocationId":"<PROD_ID>"}]}'
@@ -296,7 +296,7 @@ curl -X POST http://localhost:4000/api/transfers \
 
 ### Delivery
 ```bash
-curl -X POST http://localhost:4000/api/deliveries \
+curl -X POST https://odoo-stock-backend.vercel.app/api/deliveries \
   -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"referenceId":"DEL-001","lines":[{"productId":"<PRODUCT_ID>","qty":10,"fromLocationId":"<MAIN_ID>"}]}'
@@ -304,9 +304,8 @@ curl -X POST http://localhost:4000/api/deliveries \
 
 ### Dashboard
 ```bash
-curl -H "Authorization: Bearer ${TOKEN}" http://localhost:4000/api/dashboard
+curl -H "Authorization: Bearer ${TOKEN}" https://odoo-stock-backend.vercel.app/api/dashboard
 ```
 
 ---
 
-If anything in this backend differs from your expectations (naming, flows, or additional fields), you can tweak the models/routes, and the rest of the architecture should still hold.

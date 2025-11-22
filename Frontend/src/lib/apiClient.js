@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:4000/api';
+const API_BASE_URL = 'https://odoo-stock-backend.vercel.app/api';
 
 // Create axios instance
 const apiClient = axios.create({
